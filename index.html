@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Кто хочет стать миллионером?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background: #02030b url("bg.jpg") center/cover no-repeat fixed; /* Поставь свой фон bg.jpg */
+      color: #f5f5f5;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      padding: env(safe-area-inset-top, 0px) 10px env(safe-area-inset-bottom, 12px);
+    }
+
+    .game-wrapper {
+      width: min(430px, 100vw);    /* комфортная ширина под айфон 16 Pro Max */
+      height: 100vh;               /* на всю высоту экрана */
+      max-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .game-card {
+      width: 100%;
+      max-height: 100%;
+      background: rgba(5, 6, 18, 0.9);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+      padding: 16px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .progress {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 3px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .dot.active {
+      background: #ffd54f;
+    }
+
+    .score {
+      font-weight: 500;
+    }
+
+    .question-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 10px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .question-number {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.8;
+    }
+
+    .question-text {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .question-image {
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-top: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .question-image img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .answers {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .answer-btn {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 10px 12px;
+      background: rgba(18, 21, 45, 0.95);
+      color: #f5f5f5;
+      font-size: 15px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      outline: none;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease, border-color 0.12s ease;
+    }
+
+    .answer-btn span.label {
+      font-weight: 600;
+      font-size: 13px;
+      opacity: 0.7;
+      min-width: 18px;
+    }
+
+    .answer-btn span.text {
+      flex: 1;
+    }
+
+    .answer-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    .answer-btn.correct {
+      background: #1b5e20;
+      border-color: #66bb6a;
+    }
+
+    .answer-btn.wrong {
+      background: #b71c1c;
+      border-color: #ef5350;
+    }
+
+    .answer-btn.disabled {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-text {
+      font-size: 13px;
+      min-height: 1.2em;
+      opacity: 0.9;
+    }
+
+    .primary-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 9px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ffcc33, #ff9800);
+      color: #161616;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+      outline: none;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .primary-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+    }
+
+    .primary-btn.hidden {
+      display: none;
+    }
+
+    /* Стартовый и финальный экраны */
+
+    .overlay-screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: radial-gradient(circle at top, rgba(255, 215, 64, 0.14), transparent 55%);
+      backdrop-filter: blur(4px);
+    }
+
+    .overlay-card {
+      background: rgba(3, 4, 15, 0.95);
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 20px 18px 18px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .overlay-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .overlay-subtitle {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 16px;
+    }
+
+    .result-score {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .result-note {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 18px;
+    }
+
+    @media (max-height: 640px) {
+      .question-text {
+        font-size: 16px;
+      }
+      .answer-btn {
+        font-size: 14px;
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="game-card">
+
+      <!-- Стартовый экран -->
+      <div id="start-screen" class="overlay-screen">
+        <div class="overlay-card">
+          <div class="overlay-title">Кто хочет стать миллионером?</div>
+          <div class="overlay-subtitle">
+            Ответь на 20 вопросов. У каждого вопроса только один правильный ответ.
+          </div>
+          <button id="start-btn" class="primary-btn">
+            Начать игру
+          </button>
+        </div>
+      </div>
+
+      <!-- Верхняя панель -->
+      <div class="top-bar">
+        <div class="progress">
+          <span id="question-counter">Вопрос 1 / 20</span>
+        </div>
+        <div class="score">
+          Очки: <span id="score-value">0</span>
+        </div>
+      </div>
+
+      <!-- Основная область с вопросом -->
+      <div class="question-area">
+        <div class="question-number" id="question-label">Вопрос 1</div>
+        <div class="question-text" id="question-text">
+          Здесь будет текст вопроса
+        </div>
+        <div class="question-image" id="question-image-wrapper" style="display:none;">
+          <img id="question-image" src="" alt="Картинка к вопросу">
+        </div>
+      </div>
+
+      <!-- Варианты ответов -->
+      <div class="answers" id="answers-container">
+        <!-- Кнопки ответов создаются скриптом -->
+      </div>
+
+      <!-- Нижняя панель -->
+      <div class="bottom-bar">
+        <div class="status-text" id="status-text"></div>
+        <button id="next-btn" class="primary-btn hidden">
+          Далее
+        </button>
+      </div>
+
+      <!-- Финальный экран -->
+      <div id="end-screen" class="overlay-screen" style="display:none;">
+        <div class="overlay-card">
+          <div class="overlay-title">Игра окончена!</div>
+          <div class="result-score">
+            Ваш результат: <span id="final-score">0</span> из <span id="final-total">20</span>
+          </div>
+          <div class="result-note" id="result-note">
+            Неплохо, но можно и лучше 😉
+          </div>
+          <button id="restart-btn" class="primary-btn">
+            Играть ещё раз
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ====== ДАННЫЕ С ВОПРОСАМИ ======
+    // type: "text" или "image" (если есть картинка)
+    // image: путь к картинке (положи, например, в папку img/)
+    const questions = [
+      {
+        type: "text",
+        question: "Столица Турции — это…",
+        options: ["Стамбул", "Анкара", "Измир", "Бурса"],
+        correctIndex: 1
+      },
+      {
+        type: "text",
+        question: "Какой пролив разделяет Европу и Азию в районе Стамбула?",
+        options: ["Дарданеллы", "Гибралтар", "Босфор", "Мармарский"],
+        correctIndex: 2
+      },
+      {
+        type: "image",
+        question: "Как называется эта знаменитая достопримечательность Стамбула?",
+        image: "img/ayasofya.jpg",
+        options: ["Султанахмет (Голубая мечеть)", "Галатская башня", "Айя-София", "Топкапы"],
+        correctIndex: 2
+      },
+      {
+        type: "text",
+        question: "Сколько минут в одном часе?",
+        options: ["30", "45", "60", "90"],
+        correctIndex: 2
+      },
+      {
+        type: "text",
+        question: "Какой океан самый большой по площади?",
+        options: ["Индийский", "Тихий", "Атлантический", "Северный Ледовитый"],
+        correctIndex: 1
+      },
+      {
+        type: "text",
+        question: "Какой город называют «городом на Неве»?",
+        options: ["Москва", "Казань", "Новосибирск", "Санкт-Петербург"],
+        correctIndex: 3
+      },
+      {
+        type: "text",
+        question: "Какая планета ближе всего к Солнцу?",
+        options: ["Меркурий", "Венера", "Марс", "Юпитер"],
+        correctIndex: 0
+      },
+      {
+        type: "text",
+        question: "Как называется самая длинная река в мире (по большинству современных данных)?",
+        options: ["Нил", "Амазонка", "Янцзы", "Миссисипи"],
+        correctIndex: 1
+      },
+      {
+        type: "image",
+        question: "На фото видна форма какого флага?",
+        image: "img/turkey-flag.jpg",
+        options: ["Флаг Италии", "Флаг Турции", "Флаг Туниса", "Флаг Марокко"],
+        correctIndex: 1
+      },
+      {
+        type: "text",
+        question: "Сколько будет 9 × 7?",
+        options: ["54", "56", "63", "72"],
+        correctIndex: 2
+      },
+      {
+        type: "text",
+        question: "Как называется произведение, автором которого является Уильям Шекспир?",
+        options: ["Война и мир", "Преступление и наказание", "Гамлет", "Мастер и Маргарита"],
+        correctIndex: 2
+      },
+      {
+        type: "text",
+        question: "Какой газ необходим человеку для дыхания?",
+        options: ["Азот", "Кислород", "Углекислый газ", "Водород"],
+        correctIndex: 1
+      },
+      {
+        type: "text",
+        question: "Как называется древний город-курорт на побережье Анталии, где есть амфитеатр и город в скале?",
+        options: ["Сиде", "Бодрум", "Мармарис", "Чешме"],
+        correctIndex: 0
+      },
+      {
+        type: "text",
+        question: "Какая валюта используется в Турции?",
+        options: ["Евро", "Доллар", "Лира", "Фунт"],
+        correctIndex: 2
+      },
+      {
+        type: "text",
+        question: "Сколько континентов на Земле, если считать Европу и Азию отдельно?",
+        options: ["4", "5", "6", "7"],
+        correctIndex: 3
+      },
+      {
+        type: "image",
+        question: "Как называется место, где зачастую фотографируют знаменитый стамбульский трамвай?",
+        image: "img/istiklal-tram.jpg",
+        options: ["Кадыкёй", "Нишанташи", "Истікляль", "Бешикташ"],
+        correctIndex: 2
+      },
+      {
+        type: "text",
+        question: "Какое море омывает Стамбул с юга?",
+        options: ["Черное море", "Эгейское море", "Средиземное море", "Мраморное море"],
+        correctIndex: 3
+      },
+      {
+        type: "text",
+        question: "Как называется человек, который пишет программы?",
+        options: ["Дизайнер", "Программист", "Актёр", "Повар"],
+        correctIndex: 1
+      },
+      {
+        type: "text",
+        question: "Как называются числа, которые делятся только на 1 и на себя?",
+        options: ["Чётные", "Нечётные", "Простые", "Сложные"],
+        correctIndex: 2
+      },
+      {
+        type: "text",
+        question: "Какой язык программирования чаще всего используется для создания интерактивных страниц в браузере?",
+        options: ["Python", "JavaScript", "C++", "Java"],
+        correctIndex: 1
+      }
+    ];
+
+    // ====== ЛОГИКА ИГРЫ ======
+    const totalQuestions = questions.length;
+
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false; // защита от повторных кликов
+
+    // Элементы DOM
+    const startScreen = document.getElementById("start-screen");
+    const endScreen = document.getElementById("end-screen");
+    const startBtn = document.getElementById("start-btn");
+    const restartBtn = document.getElementById("restart-btn");
+
+    const questionCounter = document.getElementById("question-counter");
+    const scoreValue = document.getElementById("score-value");
+    const questionLabel = document.getElementById("question-label");
+    const questionText = document.getElementById("question-text");
+    const questionImageWrapper = document.getElementById("question-image-wrapper");
+    const questionImage = document.getElementById("question-image");
+    const answersContainer = document.getElementById("answers-container");
+    const statusText = document.getElementById("status-text");
+    const nextBtn = document.getElementById("next-btn");
+
+    const finalScore = document.getElementById("final-score");
+    const finalTotal = document.getElementById("final-total");
+    const resultNote = document.getElementById("result-note");
+
+    // Старт
+    startBtn.addEventListener("click", () => {
+      startScreen.style.display = "none";
+      resetGame();
+      renderQuestion();
+    });
+
+    restartBtn.addEventListener("click", () => {
+      endScreen.style.display = "none";
+      resetGame();
+      renderQuestion();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < totalQuestions - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showEndScreen();
+      }
+    });
+
+    function resetGame() {
+      currentIndex = 0;
+      score = 0;
+      scoreValue.textContent = score;
+      statusText.textContent = "";
+      answered = false;
+      nextBtn.classList.add("hidden");
+    }
+
+    function renderQuestion() {
+      const q = questions[currentIndex];
+      answered = false;
+
+      // Обновляем текстовые элементы
+      questionCounter.textContent = `Вопрос ${currentIndex + 1} / ${totalQuestions}`;
+      questionLabel.textContent = `Вопрос ${currentIndex + 1}`;
+      questionText.textContent = q.question;
+      statusText.textContent = "";
+
+      // Картинка, если есть
+      if (q.type === "image" && q.image) {
+        questionImageWrapper.style.display = "";
+        questionImage.src = q.image;
+      } else {
+        questionImageWrapper.style.display = "none";
+        questionImage.src = "";
+      }
+
+      // Рендер ответов
+      answersContainer.innerHTML = "";
+      const labels = ["A", "B", "C", "D"];
+
+      q.options.forEach((option, index) => {
+        const btn = document.createElement("button");
+        btn.className = "answer-btn";
+        btn.dataset.index = index.toString();
+        btn.innerHTML = `
+          <span class="label">${labels[index] || ""}</span>
+          <span class="text">${option}</span>
+        `;
+        btn.addEventListener("click", () => onAnswerClick(btn, index));
+        answersContainer.appendChild(btn);
+      });
+
+      nextBtn.classList.add("hidden");
+    }
+
+    function onAnswerClick(btn, index) {
+      if (answered) return; // уже ответили
+
+      answered = true;
+      const q = questions[currentIndex];
+
+      const buttons = answersContainer.querySelectorAll(".answer-btn");
+      buttons.forEach(b => b.classList.add("disabled"));
+
+      if (index === q.correctIndex) {
+        btn.classList.add("correct");
+        score++;
+        scoreValue.textContent = score;
+        statusText.textContent = "Верно!";
+      } else {
+        btn.classList.add("wrong");
+        statusText.textContent = "Неверно.";
+        // Подсвечиваем правильный
+        const correctBtn = Array.from(buttons).find(
+          b => Number(b.dataset.index) === q.correctIndex
+        );
+        if (correctBtn) correctBtn.classList.add("correct");
+      }
+
+      nextBtn.classList.remove("hidden");
+      nextBtn.textContent = currentIndex === totalQuestions - 1 ? "Результат" : "Далее";
+    }
+
+    function showEndScreen() {
+      finalScore.textContent = score.toString();
+      finalTotal.textContent = totalQuestions.toString();
+
+      // Простая фраза в зависимости от результата
+      const ratio = score / totalQuestions;
+      if (ratio === 1) {
+        resultNote.textContent = "Идеально! Ты настоящий миллионер знаний 💰";
+      } else if (ratio >= 0.7) {
+        resultNote.textContent = "Отличный результат! Совсем чуть-чуть до идеала.";
+      } else if (ratio >= 0.4) {
+        resultNote.textContent = "Неплохо, но можно и лучше. Попробуй ещё раз!";
+      } else {
+        resultNote.textContent = "Ну такое… Зато есть повод пройти ещё раз и улучшить результат 🙂";
+      }
+
+      endScreen.style.display = "flex";
+    }
+
+    // По умолчанию показываем стартовый экран, вопрос отрисуется после нажатия "Начать"
+  </script>
+</body>
+</html>
