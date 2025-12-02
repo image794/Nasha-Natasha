@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Кто хочет стать миллионером?</title>
+  <title>Кто хочет стать Наташей?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <style>
     * {
@@ -276,12 +276,14 @@
 </head>
 <body>
   <div class="game-wrapper">
+	 <audio id="bg-music" src="music.mp3" loop></audio>
     <div class="game-card">
+		
 
       <!-- Стартовый экран -->
       <div id="start-screen" class="overlay-screen">
         <div class="overlay-card">
-          <div class="overlay-title">Кто хочет стать миллионером?</div>
+          <div class="overlay-title">Кто хочет стать Наташей?</div>
           <div class="overlay-subtitle">
             Ответь на 20 вопросов. У каждого вопроса только один правильный ответ.
           </div>
@@ -300,6 +302,17 @@
           Очки: <span id="score-value">0</span>
         </div>
       </div>
+	  
+	  <!-- Кнопка звука -->
+	    <button id="mute-btn" style="
+	      background:none;
+	      border:none;
+	      color:#fff;
+	      font-size:20px;
+	      cursor:pointer;
+	      margin-left: 8px;
+	    ">🔊</button>
+	  </div>
 
       <!-- Основная область с вопросом -->
       <div class="question-area">
@@ -352,63 +365,63 @@
       {
         type: "text",
         question: "Столица Турции — это…",
-        options: ["Стамбул", "Анкара", "Измир", "Бурса"],
+        options: ["Стамбул", "Наташа", "Измир", "Бурса"],
         correctIndex: 1
       },
       {
         type: "text",
         question: "Какой пролив разделяет Европу и Азию в районе Стамбула?",
-        options: ["Дарданеллы", "Гибралтар", "Босфор", "Мармарский"],
+        options: ["Дарданеллы", "Гибралтар", "Наташа", "Мармарский"],
         correctIndex: 2
       },
       {
         type: "image",
         question: "Как называется эта знаменитая достопримечательность Стамбула?",
-        image: "img/ayasofya.jpg",
+        image: "img/Natasha.jpg",
         options: ["Султанахмет (Голубая мечеть)", "Галатская башня", "Айя-София", "Топкапы"],
         correctIndex: 2
       },
       {
         type: "text",
         question: "Сколько минут в одном часе?",
-        options: ["30", "45", "60", "90"],
+        options: ["30", "45", "Наташа", "90"],
         correctIndex: 2
       },
       {
         type: "text",
         question: "Какой океан самый большой по площади?",
-        options: ["Индийский", "Тихий", "Атлантический", "Северный Ледовитый"],
+        options: ["Индийский", "Наташа", "Атлантический", "Северный Ледовитый"],
         correctIndex: 1
       },
       {
         type: "text",
         question: "Какой город называют «городом на Неве»?",
-        options: ["Москва", "Казань", "Новосибирск", "Санкт-Петербург"],
+        options: ["Москва", "Казань", "Новосибирск", "Наташа"],
         correctIndex: 3
       },
       {
         type: "text",
         question: "Какая планета ближе всего к Солнцу?",
-        options: ["Меркурий", "Венера", "Марс", "Юпитер"],
+        options: ["Наташа", "Венера", "Марс", "Юпитер"],
         correctIndex: 0
       },
       {
         type: "text",
         question: "Как называется самая длинная река в мире (по большинству современных данных)?",
-        options: ["Нил", "Амазонка", "Янцзы", "Миссисипи"],
+        options: ["Нил", "Наташа", "Янцзы", "Миссисипи"],
         correctIndex: 1
       },
       {
         type: "image",
         question: "На фото видна форма какого флага?",
         image: "img/turkey-flag.jpg",
-        options: ["Флаг Италии", "Флаг Турции", "Флаг Туниса", "Флаг Марокко"],
+        options: ["Флаг Италии", "Флаг Наташи", "Флаг Туниса", "Флаг Марокко"],
         correctIndex: 1
       },
       {
         type: "text",
         question: "Сколько будет 9 × 7?",
-        options: ["54", "56", "63", "72"],
+        options: ["54", "56", "Наташа", "72"],
         correctIndex: 2
       },
       {
@@ -502,17 +515,19 @@
     const resultNote = document.getElementById("result-note");
 
     // Старт
-    startBtn.addEventListener("click", () => {
-      startScreen.style.display = "none";
-      resetGame();
-      renderQuestion();
-    });
+	startBtn.addEventListener("click", () => {
+	  startScreen.style.display = "none";
+	  resetGame();
+	  renderQuestion();
+	  playMusic();
+	});
 
-    restartBtn.addEventListener("click", () => {
-      endScreen.style.display = "none";
-      resetGame();
-      renderQuestion();
-    });
+	restartBtn.addEventListener("click", () => {
+	  endScreen.style.display = "none";
+	  resetGame();
+	  renderQuestion();
+	  playMusic();
+	});
 
     nextBtn.addEventListener("click", () => {
       if (currentIndex < totalQuestions - 1) {
@@ -605,9 +620,9 @@
       // Простая фраза в зависимости от результата
       const ratio = score / totalQuestions;
       if (ratio === 1) {
-        resultNote.textContent = "Идеально! Ты настоящий миллионер знаний 💰";
+        resultNote.textContent = "Идеально! Ты настоящий Наташа 💰";
       } else if (ratio >= 0.7) {
-        resultNote.textContent = "Отличный результат! Совсем чуть-чуть до идеала.";
+        resultNote.textContent = "Отличный результат! Совсем чуть-чуть до Наташи.";
       } else if (ratio >= 0.4) {
         resultNote.textContent = "Неплохо, но можно и лучше. Попробуй ещё раз!";
       } else {
@@ -616,6 +631,23 @@
 
       endScreen.style.display = "flex";
     }
+	
+	const music = document.getElementById("bg-music");
+	const muteBtn = document.getElementById("mute-btn");
+
+	// Функция запуска музыки (после клика работает 100% даже на iPhone)
+	function playMusic() {
+	  music.volume = 0.4; // громкость от 0 до 1
+	  music.play().catch(() => {
+	    console.log("Автозапуск заблокирован браузером — включи вручную.");
+	  });
+	}
+
+	// Логика mute/unmute
+	muteBtn.addEventListener("click", () => {
+	  music.muted = !music.muted;
+	  muteBtn.textContent = music.muted ? "🔇" : "🔊";
+	});
 
     // По умолчанию показываем стартовый экран, вопрос отрисуется после нажатия "Начать"
   </script>
