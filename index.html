@@ -55,6 +55,11 @@
       font-size: 13px;
       opacity: 0.9;
     }
+	  /* Скрываем верхнюю панель ДО начала игры */
+.start-hidden .top-bar {
+  opacity: 0;
+  pointer-events: none;
+}
 
     .progress {
       display: inline-flex;
@@ -275,7 +280,7 @@
   </style>
 </head>
 <body>
-  <div class="game-wrapper">
+  <div class="game-wrapper start-hidden">
 	 <audio id="bg-music" src="music.mp3" loop></audio>
     <div class="game-card">
 		
@@ -516,11 +521,15 @@
 
     // Старт
 	startBtn.addEventListener("click", () => {
-	  startScreen.style.display = "none";
-	  resetGame();
-	  renderQuestion();
-	  playMusic();
-	});
+  startScreen.style.display = "none";
+
+  // 👉 СНИМАЕМ КЛАСС, чтобы показать верхнюю панель
+  document.querySelector(".game-wrapper").classList.remove("start-hidden");
+
+  resetGame();
+  renderQuestion();
+  playMusic();
+});
 
 	restartBtn.addEventListener("click", () => {
 	  endScreen.style.display = "none";
