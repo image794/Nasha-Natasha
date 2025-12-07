@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Найди все сделанные тобой фото 📸</title>
+  <title>Найди всех родных и близких 📸</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * {
@@ -213,18 +213,18 @@
   <div class="page" id="page">
     <header class="top-ui">
       <div class="top-row">
-        <div class="game-title">Найди все что скрыто 🔍</div>
+        <div class="game-title">Найди своиз родных и близких 🔍</div>
         <button class="pill pill-btn" id="musicToggle">Поднять настроение 🎵</button>
       </div>
-      <button class="pill pill-btn" id="hintBtn"> Обратиться за помощью к оракулу (3 раза)</button>
+      <button class="pill pill-btn" id="hintBtn"> Обратиться за помощью (3 раза)</button>
       <div class="top-row">
         <div class="game-subtitle">
-          Нажимай на свои фото, чтобы они исчезали.
+          Нажимай на фото близких, чтобы они исчезали.
         </div>
         <div class="pill counter-pill" id="counter">Найдено 0 из 36</div>
       </div>
       <div class="status-text" id="statusText">
-        Найди 36 правильных фото. Остальное — просто посмотреть 🙂
+        Найди 33 фото близких. Остальное — просто насладиться 🙂
       </div>
     </header>
 
@@ -249,7 +249,7 @@
       'good13.jpg','good14.jpg','good15.jpg','good16.jpg','good17.jpg','good18.jpg',
       'good19.jpg','good20.jpg','good21.jpg','good22.jpg','good23.jpg','good24.jpg',
       'good25.jpg','good26.jpg','good27.jpg','good28.jpg','good29.jpg','good30.jpg',
-      'good31.jpg','good32.jpg','good33.jpg','good34.jpg','good35.jpg','good36.jpg',
+      'good31.jpg','good32.jpg','good33.jpg',
     ];
 
     const badFiles = [
@@ -304,7 +304,7 @@
 	  if (candidates.length === 0) return;
 
 	  hintsLeft--;
-	  hintBtn.textContent = `Помощь глазам ✨ (${hintsLeft})`;
+	  hintBtn.textContent = `Помощь в посике ✨ (${hintsLeft})`;
 
 	  const target = candidates[Math.floor(Math.random() * candidates.length)];
 
@@ -502,7 +502,7 @@
         updateCounter();
 
         if (foundGood >= GOOD_COUNT) {
-          statusTextEl.textContent = 'Браво! Ты нашла все свои фото ✨ Теперь смотри на знаки Вселенной!';
+          statusTextEl.textContent = 'Браво! Ты нашла всех близких ✨ Теперь смотри на знаки Вселенной!';
           page.classList.add('game-complete');
 
           // скрываем все остальные
@@ -526,7 +526,7 @@
             winSound.play().catch(() => {});
           }
         } else {
-          statusTextEl.textContent = 'Ууффф! Продолжай искать свои фото…';
+          statusTextEl.textContent = 'Ууффф! Продолжай искать близких…';
         }
       } else {
         // неправильное фото — не убираем, просто текст
